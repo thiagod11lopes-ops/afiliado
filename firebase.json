@@ -7,7 +7,17 @@
       "**/node_modules/**",
       "README.md",
       "LICENSE",
-      "FIREBASE.md"
+      "FIREBASE.md",
+      "*.bat",
+      "*.cmd",
+      "*.ps1",
+      "*.exe",
+      "*.sh",
+      "**/*.bat",
+      "**/*.ps1",
+      "COMO-FAZER-COMMIT.txt",
+      "ANALISE-FIREBASE.md",
+      "FIREBASE_SETUP.md"
     ]
   }
 }

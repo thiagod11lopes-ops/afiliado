@@ -33,6 +33,9 @@
   function getProdutosFromFirestore() {
     return new Promise(function (resolve) {
       if (!configValid || !db) {
+        if (typeof console !== 'undefined' && console.log) {
+          console.log('Vitrine Net: Firebase nao inicializado, usando localStorage.');
+        }
         try {
           var raw = localStorage.getItem(STORAGE_KEY);
           resolve(raw ? JSON.parse(raw) : []);
@@ -45,10 +48,14 @@
         .then(function (doc) {
           var data = doc.exists && doc.data() ? doc.data() : {};
           var items = data.items;
-          resolve(Array.isArray(items) ? items : []);
+          var list = Array.isArray(items) ? items : [];
+          if (typeof console !== 'undefined' && console.log) {
+            console.log('Vitrine Net: carregados', list.length, 'produtos do Firestore.');
+          }
+          resolve(list);
         })
         .catch(function (err) {
-          console.warn('Erro ao ler Firestore, usando localStorage.', err);
+          console.warn('Vitrine Net: erro ao ler Firestore, usando localStorage.', err);
           try {
             var raw = localStorage.getItem(STORAGE_KEY);
             resolve(raw ? JSON.parse(raw) : []);

@@ -348,7 +348,10 @@
 
   function init() {
     if (window.VitrineFirebase && typeof VitrineFirebase.init === 'function') {
-      VitrineFirebase.init();
+      var ok = VitrineFirebase.init();
+      if (typeof console !== 'undefined' && console.log) {
+        console.log('Vitrine Net: Firebase init =', ok ? 'OK' : 'fallback localStorage');
+      }
     }
     renderProdutos();
     initViewMode();
