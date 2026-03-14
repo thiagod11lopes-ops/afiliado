@@ -285,14 +285,21 @@
 
     if (!form) return;
 
-    ['produtoTitulo', 'produtoDescricao', 'produtoPreco'].forEach(function (id) {
+    ['produtoTitulo', 'produtoDescricao', 'produtoPreco', 'produtoUrl'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener('input', atualizarPreview);
     });
     const elOferta = $('#produtoOferta');
     const elDesconto = $('#produtoDesconto');
+    const elCategoria = $('#produtoCategoria');
     if (elOferta) elOferta.addEventListener('change', atualizarPreview);
     if (elDesconto) elDesconto.addEventListener('change', atualizarPreview);
+    if (elCategoria) elCategoria.addEventListener('change', atualizarPreview);
+    var formFields = document.getElementById('formFieldsProduto');
+    if (formFields) {
+      formFields.addEventListener('input', atualizarPreview);
+      formFields.addEventListener('change', atualizarPreview);
+    }
 
     if (btnVerProdutos) {
       btnVerProdutos.addEventListener('click', abrirModalProdutos);
@@ -419,7 +426,10 @@
       }
 
       if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
-        VitrineFirebase.getProdutos().then(doSave);
+        VitrineFirebase.getProdutos().then(function (r) {
+          var list = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
+          doSave(list);
+        });
       } else {
         doSave(getProdutosSync());
       }
