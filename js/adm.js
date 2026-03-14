@@ -434,7 +434,8 @@
           atualizarPreview();
           atualizarContadorProdutos();
         }).catch(function (err) {
-          alert('Erro ao salvar: ' + (err && err.message ? err.message : String(err)));
+          var msg = (err && err.message) ? err.message : String(err);
+          alert('Não foi possível salvar no servidor (Firestore).\n\nErro: ' + msg + '\n\nVerifique: 1) Firebase Console > Firestore > Regras estão publicadas. 2) Configurações do projeto > Domínios autorizados inclui seu site.');
         });
       }
 

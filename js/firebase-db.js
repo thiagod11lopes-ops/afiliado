@@ -85,17 +85,12 @@
       db.collection('vitrine').doc('produtos').set({ items: produtos })
         .then(resolve)
         .catch(function (err) {
-          console.error('Erro ao salvar no Firestore:', err);
-          var msg = (err && err.message) ? err.message : String(err);
-          if (typeof alert === 'function') {
-            alert('Não foi possível salvar no Firestore.\nErro: ' + msg + '\n\nOs dados foram salvos só no navegador (localStorage). Verifique as regras do Firestore e publique-as.');
-          }
+          console.error('Vitrine Net: erro ao salvar no Firestore', err);
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos));
-            resolve();
-          } catch (e) {
-            reject(e);
-          }
+          } catch (e) {}
+          var msg = (err && err.message) ? err.message : String(err);
+          reject(new Error('Firestore: ' + msg));
         });
     });
   }
