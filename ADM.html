@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Vitrine Net — painel de cadastro de produtos (ADM).">
+  <title>Vitrine Net — ADM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <script>
+    (function() {
+      var t = localStorage.getItem('afiliado_espehlo_theme_v1') || 'cyberpunk';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+  <div class="grid-overlay"></div>
+
+  <header class="header">
+    <div class="logo">
+      <span class="logo-bracket">[</span>
+      <span class="logo-text">AFILIADO</span>
+      <span class="logo-divider">//</span>
+      <span class="logo-text">ESPELHO ADM</span>
+      <span class="logo-bracket">]</span>
+    </div>
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      <span class="status-text">PAINEL ADMINISTRATIVO</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="hero">
+      <h1 class="hero-title">
+        <span class="glitch" data-text="Vitrine Net">Vitrine Net</span>
+      </h1>
+      <p class="adm-contador" id="contadorProdutos">0 produtos cadastrados</p>
+    </section>
+
+    <section class="adm-section">
+      <div class="adm-actions-top">
+        <button type="button" class="modal-btn modal-btn--primary" id="btnVerProdutos">VER PRODUTOS CADASTRADOS</button>
+      </div>
+      <div class="adm-tema">
+        <label for="temaFrontend" class="modal-label">Tema</label>
+        <select id="temaFrontend" class="modal-input adm-select adm-select--full">
+          <option value="cyberpunk">Gamer / Cyberpunk</option>
+          <option value="neumorfismo">Neumorfismo (Soft UI)</option>
+          <option value="glassmorfismo">Glassmorfismo (Efeito Vidro)</option>
+          <option value="steampunk">Steampunk (Retrô-Vitoriano)</option>
+          <option value="solarpunk">Solarpunk (Futuro Ecológico)</option>
+          <option value="brutalismo">Brutalismo Digital (Design Cru)</option>
+          <option value="vaporwave">Vaporwave (Retrô Anos 80/90)</option>
+          <option value="bento">Bento Grid (Estilo Apple/Modular)</option>
+          <option value="dark-academia">Dark Academia (Estético Clássico/Intelectual)</option>
+          <option value="minimalismo">Minimalismo Suíço (Foco em Tipografia)</option>
+          <option value="biodesign">Bio-Design (Formas Orgânicas e Fluídas)</option>
+          <option value="shopee">Shopee (Vibrant Marketplace)</option>
+          <option value="mercadolivre">Mercado Livre (Clean Retail)</option>
+          <option value="magalu">Magalu (Modular)</option>
+        </select>
+      </div>
+
+      <form id="formProduto" class="adm-form" data-editing-id="">
+        <button type="button" class="modal-btn modal-btn--secondary adm-btn-dados" id="btnDadosProduto">Insira os dados do produto</button>
+        <div class="adm-form-fields" id="formFieldsProduto">
+        <div class="adm-field">
+          <label for="produtoUrl" class="modal-label">Link completo do produto</label>
+          <input type="url" id="produtoUrl" class="modal-input" placeholder="https://loja.com/produto..." required>
+        </div>
+
+        <div class="adm-grid">
+          <div class="adm-field">
+            <label for="produtoTitulo" class="modal-label">Título</label>
+            <input type="text" id="produtoTitulo" class="modal-input" placeholder="Título do produto" required>
+          </div>
+          <div class="adm-field">
+            <label for="produtoPreco" class="modal-label">Preço</label>
+            <input type="text" id="produtoPreco" class="modal-input" placeholder="R$ 0,00" required>
+          </div>
+        </div>
+
+        <div class="adm-field">
+          <label for="produtoDescricao" class="modal-label">Descrição</label>
+          <textarea id="produtoDescricao" class="modal-input adm-textarea" rows="3" placeholder="Resumo do produto" required></textarea>
+        </div>
+
+        <div class="adm-field">
+          <label for="produtoImagem" class="modal-label">URL(s) da imagem do produto</label>
+          <div class="adm-imagens-row">
+            <input type="url" id="produtoImagem" class="modal-input adm-imagem-input" placeholder="https://...">
+            <button type="button" class="modal-btn modal-btn--primary adm-btn-add-imagem" id="btnAddImagem">Adicionar</button>
+          </div>
+          <div class="adm-imagens-lista" id="listaImagensProduto"></div>
+          <span class="adm-field-hint">Digite uma URL e clique em Adicionar. As imagens aparecem abaixo; use as setas no produto para navegar.</span>
+        </div>
+
+        <div class="adm-field">
+          <label for="produtoVideo" class="modal-label">Link do vídeo</label>
+          <input type="url" id="produtoVideo" class="modal-input" placeholder="https://... (YouTube, Vimeo ou .mp4)">
+          <span class="adm-field-hint">Opcional. No site aparece um botão de play sobre as imagens; o vídeo só roda ao clicar.</span>
+        </div>
+
+        <div class="adm-field">
+          <label for="produtoCategoria" class="modal-label">Categoria</label>
+          <select id="produtoCategoria" class="modal-input adm-select adm-select--full">
+            <option value="sem_categoria">Sem categoria</option>
+            <option value="achadinhos">Achadinhos</option>
+            <option value="eletronicos">Eletrônicos</option>
+            <option value="casa">Casa &amp; Decoração</option>
+            <option value="moda">Moda</option>
+            <option value="beleza">Beleza</option>
+          </select>
+          <span class="adm-field-hint">Se deixar em "Sem categoria", o produto será filtrado nessa opção no site.</span>
+        </div>
+
+        <div class="adm-opcoes">
+          <div class="adm-field adm-field--check">
+            <label class="adm-check-label">
+              <input type="checkbox" id="produtoOferta" name="oferta" class="adm-check">
+              <span>Adicionar como Oferta</span>
+            </label>
+            <span class="adm-field-hint">Exibe "OFERTA" no canto superior direito da imagem.</span>
+          </div>
+          <div class="adm-field">
+            <label for="produtoDesconto" class="modal-label">Desconto</label>
+            <select id="produtoDesconto" class="modal-input adm-select">
+              <option value="">Nenhum</option>
+              <option value="5">-5%</option>
+              <option value="10">-10%</option>
+              <option value="15">-15%</option>
+              <option value="20">-20%</option>
+              <option value="25">-25%</option>
+              <option value="30">-30%</option>
+              <option value="35">-35%</option>
+              <option value="40">-40%</option>
+              <option value="45">-45%</option>
+              <option value="50">-50%</option>
+              <option value="55">-55%</option>
+              <option value="60">-60%</option>
+              <option value="65">-65%</option>
+              <option value="70">-70%</option>
+              <option value="75">-75%</option>
+              <option value="80">-80%</option>
+              <option value="85">-85%</option>
+              <option value="90">-90%</option>
+            </select>
+            <span class="adm-field-hint">Percentual fixado no canto superior direito do produto.</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn modal-btn--secondary" id="btnLimparProduto">LIMPAR</button>
+          <button type="submit" class="modal-btn modal-btn--primary" id="btnSubmitProduto">CADASTRAR</button>
+        </div>
+
+        <p class="adm-hint">
+          Obs.: por questões de segurança do navegador, o sistema não consegue buscar automaticamente os dados dentro do site da loja.
+          Copie e cole aqui o título, preço, descrição e imagem do próprio site para que o card fique idêntico.
+        </p>
+        </div>
+      </form>
+
+      <div class="adm-actions-bottom">
+        <a href="index.html" class="modal-btn modal-btn--secondary adm-btn-site" id="btnIrSite">IR PARA O SITE</a>
+      </div>
+
+      <div class="adm-preview">
+        <div class="section-label">
+          <span class="label-line"></span>
+          <span>PRÉ-VISUALIZAÇÃO</span>
+          <span class="label-line"></span>
+        </div>
+
+        <article class="ad-card adm-preview-card">
+          <div class="ad-card-inner adm-preview-inner">
+            <div class="card-media-wrap" id="previewMediaWrap">
+              <button type="button" class="card-nav card-nav--prev" id="previewNavPrev" aria-label="Imagem anterior" style="display: none;">‹</button>
+              <div class="adm-preview-media">
+                <img id="previewImagem" src="" alt="Imagem do produto" class="adm-preview-img" />
+              </div>
+              <button type="button" class="card-nav card-nav--next" id="previewNavNext" aria-label="Próxima imagem" style="display: none;">›</button>
+              <div class="card-badges" id="previewBadges"></div>
+            </div>
+            <div class="adm-preview-content">
+              <h3 class="ad-title" id="previewTitulo">Título do produto</h3>
+              <p class="ad-desc" id="previewDescricao">Descrição do produto aparecerá aqui.</p>
+              <p class="adm-preco" id="previewPreco">R$ 0,00</p>
+              <span class="ad-cta">
+                VER OFERTA
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-line"></div>
+    <p class="footer-text">© AFILIADO ESPELHO — PAINEL ADM</p>
+  </footer>
+
+  <div class="modal-overlay" id="modalProdutos" aria-hidden="true" role="dialog" aria-labelledby="modalProdutosTitle">
+    <div class="modal modal--produtos">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalProdutosTitle">PRODUTOS CADASTRADOS <span class="modal-contador" id="modalContadorProdutos">(0)</span></h2>
+        <button class="modal-close" type="button" id="btnFecharModalProdutos" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body modal-body--lista">
+        <div class="adm-field">
+          <label for="modalCategoriaFiltro" class="modal-label">Filtrar por categoria</label>
+          <select id="modalCategoriaFiltro" class="modal-input adm-select adm-select--full">
+            <option value="">Todas as categorias</option>
+            <option value="sem_categoria">Sem categoria</option>
+            <option value="achadinhos">Achadinhos</option>
+            <option value="eletronicos">Eletrônicos</option>
+            <option value="casa">Casa & Decoração</option>
+            <option value="moda">Moda</option>
+            <option value="beleza">Beleza</option>
+          </select>
+        </div>
+        <p class="modal-empty" id="modalProdutosVazio">Nenhum produto cadastrado.</p>
+        <ul class="lista-produtos" id="listaProdutosModal"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/adm.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,20 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores / IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Logs e temporários
+*.log
+*.tmp
+*.temp
+.cache/
+
+# Ambiente (se no futuro usar Node/npm)
+node_modules/
+.env
+.env.local

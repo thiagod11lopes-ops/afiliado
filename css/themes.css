@@ -1,0 +1,450 @@
+/* ===== TEMAS DO FRONTEND — variáveis por data-theme no html ===== */
+
+/* Cyberpunk (padrão atual) */
+html[data-theme="cyberpunk"] {
+  --bg-dark: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --neon-cyan: #00f5ff;
+  --neon-magenta: #ff00aa;
+  --neon-yellow: #f0ff00;
+  --neon-green: #00ff88;
+  --text-primary: #e0e0e8;
+  --text-muted: #6b6b80;
+  --border-glow: rgba(0, 245, 255, 0.4);
+  --shadow-cyan: 0 0 20px rgba(0, 245, 255, 0.3);
+  --shadow-magenta: 0 0 20px rgba(255, 0, 170, 0.3);
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Rajdhani', sans-serif;
+  --radius: 8px;
+}
+
+/* Relâmpago (clarão) nas imagens dos produtos — tema Cyberpunk, a cada 5s */
+@keyframes lightning-flash {
+  0%, 92%, 100% { opacity: 0; }
+  93% { opacity: 0.6; }
+  94% { opacity: 0; }
+  95% { opacity: 0.35; }
+  96% { opacity: 0; }
+}
+
+@keyframes lightning-border {
+  0%, 90%, 100% { box-shadow: 0 0 4px rgba(0, 245, 255, 0.2); }
+  91% { box-shadow: 0 0 20px rgba(0, 245, 255, 0.8), 0 0 40px rgba(0, 245, 255, 0.3); }
+  93% { box-shadow: 0 0 6px rgba(0, 245, 255, 0.4); }
+  95% { box-shadow: 0 0 16px rgba(0, 245, 255, 0.6); }
+  97% { box-shadow: 0 0 4px rgba(0, 245, 255, 0.2); }
+}
+
+html[data-theme="cyberpunk"] .card-media-wrap,
+html[data-theme="cyberpunk"] .produto-item-thumb {
+  position: relative;
+  overflow: hidden;
+  animation: lightning-border 5s ease-in-out infinite;
+}
+
+html[data-theme="cyberpunk"] .card-media-wrap .adm-preview-media,
+html[data-theme="cyberpunk"] .card-media-wrap .adm-preview-media img,
+html[data-theme="cyberpunk"] .produto-item-thumb > img {
+  position: relative;
+  z-index: 0;
+}
+
+html[data-theme="cyberpunk"] .card-media-wrap::after,
+html[data-theme="cyberpunk"] .produto-item-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(0, 245, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.25) 100%);
+  pointer-events: none;
+  animation: lightning-flash 5s ease-in-out infinite;
+}
+
+html[data-theme="cyberpunk"] .card-media-wrap .card-badges,
+html[data-theme="cyberpunk"] .produto-item-thumb .card-badges {
+  z-index: 2;
+}
+
+/* Neumorfismo (Soft UI) */
+html[data-theme="neumorfismo"] {
+  --bg-dark: #e0e5ec;
+  --bg-card: #e0e5ec;
+  --bg-card-hover: #d1d9e6;
+  --neon-cyan: #6c7a89;
+  --neon-magenta: #8e9aaf;
+  --neon-yellow: #7d8fa3;
+  --neon-green: #5a6b7d;
+  --text-primary: #2d3748;
+  --text-muted: #718096;
+  --border-glow: rgba(255, 255, 255, 0.8);
+  --shadow-cyan: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+  --shadow-magenta: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+  --font-display: 'Nunito', 'Segoe UI', sans-serif;
+  --font-body: 'Nunito', 'Segoe UI', sans-serif;
+  --radius: 16px;
+}
+
+html[data-theme="neumorfismo"] .scanlines,
+html[data-theme="neumorfismo"] .noise,
+html[data-theme="neumorfismo"] .grid-overlay { opacity: 0; }
+
+/* Glassmorfismo (Efeito Vidro) */
+html[data-theme="glassmorfismo"] {
+  --bg-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  --bg-card: rgba(255, 255, 255, 0.08);
+  --bg-card-hover: rgba(255, 255, 255, 0.12);
+  --neon-cyan: #a8dadc;
+  --neon-magenta: #f1faee;
+  --neon-yellow: #e9c46a;
+  --neon-green: #2a9d8f;
+  --text-primary: #f1faee;
+  --text-muted: rgba(241, 250, 238, 0.7);
+  --border-glow: rgba(255, 255, 255, 0.2);
+  --shadow-cyan: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --shadow-magenta: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  --radius: 16px;
+}
+
+html[data-theme="glassmorfismo"] body { background: #1a1a2e; background-image: var(--bg-dark); }
+html[data-theme="glassmorfismo"] .header { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border-color: rgba(255,255,255,0.1); }
+html[data-theme="glassmorfismo"] .scanlines,
+html[data-theme="glassmorfismo"] .noise,
+html[data-theme="glassmorfismo"] .grid-overlay { opacity: 0; }
+
+/* Steampunk (Retrô-Vitoriano) */
+html[data-theme="steampunk"] {
+  --bg-dark: #1c1915;
+  --bg-card: #2d2822;
+  --bg-card-hover: #3d3630;
+  --neon-cyan: #c9a227;
+  --neon-magenta: #8b6914;
+  --neon-yellow: #d4af37;
+  --neon-green: #7c9c6b;
+  --text-primary: #e8dcc4;
+  --text-muted: #9a8f7a;
+  --border-glow: rgba(201, 162, 39, 0.5);
+  --shadow-cyan: 0 0 15px rgba(212, 175, 55, 0.3);
+  --shadow-magenta: 0 0 15px rgba(139, 105, 20, 0.3);
+  --font-display: 'Cinzel', 'Times New Roman', serif;
+  --font-body: 'Crimson Text', Georgia, serif;
+  --radius: 4px;
+}
+
+html[data-theme="steampunk"] .grid-overlay { background-image: linear-gradient(rgba(201, 162, 39, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(201, 162, 39, 0.03) 1px, transparent 1px); }
+html[data-theme="steampunk"] .scanlines { opacity: 0.02; }
+
+/* Solarpunk (Futuro Ecológico) */
+html[data-theme="solarpunk"] {
+  --bg-dark: #0d1f12;
+  --bg-card: #1a3320;
+  --bg-card-hover: #244829;
+  --neon-cyan: #7dd87d;
+  --neon-magenta: #4ade80;
+  --neon-yellow: #bef264;
+  --neon-green: #22c55e;
+  --text-primary: #dcfce7;
+  --text-muted: #86efac;
+  --border-glow: rgba(34, 197, 94, 0.5);
+  --shadow-cyan: 0 0 20px rgba(34, 197, 94, 0.25);
+  --shadow-magenta: 0 0 20px rgba(74, 222, 128, 0.2);
+  --font-display: 'Quicksand', sans-serif;
+  --font-body: 'Quicksand', sans-serif;
+  --radius: 12px;
+}
+
+html[data-theme="solarpunk"] .grid-overlay { background-image: linear-gradient(rgba(34, 197, 94, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.06) 1px, transparent 1px); }
+html[data-theme="solarpunk"] .scanlines,
+html[data-theme="solarpunk"] .noise { opacity: 0.02; }
+
+/* Brutalismo Digital (Design Cru) */
+html[data-theme="brutalismo"] {
+  --bg-dark: #0a0a0a;
+  --bg-card: #141414;
+  --bg-card-hover: #1e1e1e;
+  --neon-cyan: #ffffff;
+  --neon-magenta: #ff3c3c;
+  --neon-yellow: #ffff00;
+  --neon-green: #00ff00;
+  --text-primary: #ffffff;
+  --text-muted: #888888;
+  --border-glow: #ffffff;
+  --shadow-cyan: none;
+  --shadow-magenta: none;
+  --font-display: 'Space Mono', 'Courier New', monospace;
+  --font-body: 'Space Mono', 'Courier New', monospace;
+  --radius: 0;
+}
+
+html[data-theme="brutalismo"] .header { border-width: 3px; }
+html[data-theme="brutalismo"] .ad-card,
+html[data-theme="brutalismo"] .produto-item { border-width: 2px; }
+html[data-theme="brutalismo"] .scanlines,
+html[data-theme="brutalismo"] .noise,
+html[data-theme="brutalismo"] .grid-overlay { opacity: 0; }
+
+/* Vaporwave (Retrô Anos 80/90) */
+html[data-theme="vaporwave"] {
+  --bg-dark: #0f0a1f;
+  --bg-card: #1a0a2e;
+  --bg-card-hover: #2d1b4e;
+  --neon-cyan: #ff71ce;
+  --neon-magenta: #01cdfe;
+  --neon-yellow: #05ffa1;
+  --neon-green: #b967ff;
+  --text-primary: #fffbff;
+  --text-muted: #e0b0ff;
+  --border-glow: rgba(255, 113, 206, 0.5);
+  --shadow-cyan: 0 0 25px rgba(1, 205, 254, 0.4);
+  --shadow-magenta: 0 0 25px rgba(255, 113, 206, 0.4);
+  --font-display: 'Righteous', cursive;
+  --font-body: 'Rajdhani', sans-serif;
+  --radius: 0;
+}
+
+html[data-theme="vaporwave"] body { background: linear-gradient(180deg, #0f0a1f 0%, #2d1b4e 50%, #0f0a1f 100%); }
+html[data-theme="vaporwave"] .grid-overlay { background-image: linear-gradient(rgba(255, 113, 206, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(1, 205, 254, 0.08) 1px, transparent 1px); }
+
+/* Bento Grid (Estilo Apple/Modular) */
+html[data-theme="bento"] {
+  --bg-dark: #f5f5f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #e8e8ed;
+  --neon-cyan: #0071e3;
+  --neon-magenta: #bf5af2;
+  --neon-yellow: #ff9f0a;
+  --neon-green: #30d158;
+  --text-primary: #1d1d1f;
+  --text-muted: #6e6e73;
+  --border-glow: rgba(0, 113, 227, 0.2);
+  --shadow-cyan: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-magenta: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  --radius: 18px;
+}
+
+html[data-theme="bento"] .header { background: rgba(255,255,255,0.72); backdrop-filter: saturate(180%) blur(20px); border-color: rgba(0,0,0,0.06); }
+html[data-theme="bento"] .scanlines,
+html[data-theme="bento"] .noise,
+html[data-theme="bento"] .grid-overlay { opacity: 0; }
+
+/* Dark Academia (Estético Clássico/Intelectual) */
+html[data-theme="dark-academia"] {
+  --bg-dark: #2c2416;
+  --bg-card: #3d3224;
+  --bg-card-hover: #4a3f30;
+  --neon-cyan: #c9a959;
+  --neon-magenta: #8b7355;
+  --neon-yellow: #d4a853;
+  --neon-green: #6b5344;
+  --text-primary: #e8e0d5;
+  --text-muted: #a89888;
+  --border-glow: rgba(201, 169, 89, 0.4);
+  --shadow-cyan: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-magenta: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+  --radius: 6px;
+}
+
+html[data-theme="dark-academia"] .scanlines,
+html[data-theme="dark-academia"] .noise { opacity: 0.02; }
+html[data-theme="dark-academia"] .grid-overlay { opacity: 0; }
+
+/* Minimalismo Suíço (Foco em Tipografia) */
+html[data-theme="minimalismo"] {
+  --bg-dark: #fafafa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f0f0;
+  --neon-cyan: #000000;
+  --neon-magenta: #333333;
+  --neon-yellow: #666666;
+  --neon-green: #000000;
+  --text-primary: #111111;
+  --text-muted: #666666;
+  --border-glow: rgba(0, 0, 0, 0.12);
+  --shadow-cyan: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-magenta: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --radius: 4px;
+}
+
+html[data-theme="minimalismo"] .header { background: #fff; border-color: rgba(0,0,0,0.08); }
+html[data-theme="minimalismo"] .scanlines,
+html[data-theme="minimalismo"] .noise,
+html[data-theme="minimalismo"] .grid-overlay { opacity: 0; }
+html[data-theme="minimalismo"] .status-bar { color: #333; }
+html[data-theme="minimalismo"] .glitch::before,
+html[data-theme="minimalismo"] .glitch::after { animation: none; }
+
+/* Bio-Design (Formas Orgânicas e Fluídas) */
+html[data-theme="biodesign"] {
+  --bg-dark: #f0f7f4;
+  --bg-card: #ffffff;
+  --bg-card-hover: #e8f0ec;
+  --neon-cyan: #2d6a4f;
+  --neon-magenta: #40916c;
+  --neon-yellow: #52b788;
+  --neon-green: #74c69d;
+  --text-primary: #1b4332;
+  --text-muted: #40916c;
+  --border-glow: rgba(45, 106, 79, 0.3);
+  --shadow-cyan: 0 8px 32px rgba(45, 106, 79, 0.12);
+  --shadow-magenta: 0 8px 32px rgba(64, 145, 108, 0.1);
+  --font-display: 'DM Sans', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 24px;
+}
+
+html[data-theme="biodesign"] .header { background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); border-color: rgba(45, 106, 79, 0.15); }
+html[data-theme="biodesign"] .ad-card,
+html[data-theme="biodesign"] .produto-item,
+html[data-theme="biodesign"] .modal { border-radius: 24px; }
+html[data-theme="biodesign"] .scanlines,
+html[data-theme="biodesign"] .noise,
+html[data-theme="biodesign"] .grid-overlay { opacity: 0; }
+
+/* ========== TEMAS MARKETPLACES ========== */
+
+/* Tema Shopee (Vibrant Marketplace) */
+html[data-theme="shopee"] {
+  --bg-dark: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fff5f3;
+  --neon-cyan: #ee4d2d;
+  --neon-magenta: #ee4d2d;
+  --neon-yellow: #ff6633;
+  --neon-green: #00b14f;
+  --text-primary: #222;
+  --text-muted: #757575;
+  --border-glow: rgba(238, 77, 45, 0.4);
+  --shadow-cyan: 0 2px 12px rgba(238, 77, 45, 0.2), 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-magenta: 0 2px 12px rgba(238, 77, 45, 0.25);
+  --font-display: 'Roboto', -apple-system, sans-serif;
+  --font-body: 'Roboto', -apple-system, sans-serif;
+  --radius: 4px;
+}
+
+html[data-theme="shopee"] body { background: #f5f5f5; }
+html[data-theme="shopee"] .header { background: #fff; border-color: rgba(238, 77, 45, 0.2); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+html[data-theme="shopee"] .scanlines,
+html[data-theme="shopee"] .noise,
+html[data-theme="shopee"] .grid-overlay { opacity: 0; }
+html[data-theme="shopee"] .ad-card,
+html[data-theme="shopee"] .produto-item { border-radius: 4px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+html[data-theme="shopee"] .ad-card:hover,
+html[data-theme="shopee"] .produto-item:hover { box-shadow: 0 4px 20px rgba(238, 77, 45, 0.15); }
+html[data-theme="shopee"] .ad-card::before { background: linear-gradient(90deg, #ee4d2d, #ff6633); height: 3px; }
+html[data-theme="shopee"] .card-badge--oferta { background: linear-gradient(135deg, #ee4d2d, #ff6633); color: #fff; font-weight: 700; border-radius: 4px; box-shadow: 0 2px 8px rgba(238, 77, 45, 0.4); padding: 0.3rem 0.5rem; }
+html[data-theme="shopee"] .card-badge--desconto { background: #ee4d2d; color: #fff; font-weight: 700; border-radius: 4px; box-shadow: 0 2px 8px rgba(238, 77, 45, 0.35); }
+html[data-theme="shopee"] .glitch::before,
+html[data-theme="shopee"] .glitch::after { animation: none; }
+html[data-theme="shopee"] .section-label { color: #ee4d2d; }
+html[data-theme="shopee"] .adm-preco,
+html[data-theme="shopee"] .produto-item-preco { color: #ee4d2d; font-weight: 700; }
+
+/* Tema Mercado Livre (Clean Retail) */
+html[data-theme="mercadolivre"] {
+  --bg-dark: #ebebeb;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --neon-cyan: #3483fa;
+  --neon-magenta: #fff159;
+  --neon-yellow: #fff159;
+  --neon-green: #00a650;
+  --text-primary: #333;
+  --text-muted: #666;
+  --border-glow: #e5e5e5;
+  --shadow-cyan: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-magenta: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --font-display: 'Proxima Nova', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Proxima Nova', -apple-system, BlinkMacSystemFont, sans-serif;
+  --radius: 8px;
+}
+
+html[data-theme="mercadolivre"] body { background: #ebebeb; }
+html[data-theme="mercadolivre"] .header { background: #fff159; border-color: #e5e5e5; }
+html[data-theme="mercadolivre"] .scanlines,
+html[data-theme="mercadolivre"] .noise,
+html[data-theme="mercadolivre"] .grid-overlay { opacity: 0; }
+html[data-theme="mercadolivre"] .main { padding: 1.5rem 1.25rem 2.5rem; }
+html[data-theme="mercadolivre"] .ads-container { gap: 1.5rem; }
+html[data-theme="mercadolivre"] .ad-card,
+html[data-theme="mercadolivre"] .produto-item { border: 1px solid #e5e5e5; border-radius: 8px; box-shadow: none; background: #fff; }
+html[data-theme="mercadolivre"] .ad-card:hover,
+html[data-theme="mercadolivre"] .produto-item:hover { border-color: #3483fa; box-shadow: 0 2px 8px rgba(52, 131, 250, 0.12); }
+html[data-theme="mercadolivre"] .ad-card::before { background: transparent; display: none; }
+html[data-theme="mercadolivre"] .ad-cta,
+html[data-theme="mercadolivre"] .modal-btn--primary { background: #3483fa !important; border-color: #3483fa !important; color: #fff !important; }
+html[data-theme="mercadolivre"] .ad-cta:hover,
+html[data-theme="mercadolivre"] .modal-btn--primary:hover { background: #2968c8 !important; border-color: #2968c8 !important; box-shadow: 0 2px 8px rgba(52, 131, 250, 0.3); }
+html[data-theme="mercadolivre"] .card-badge--oferta { background: #3483fa; color: #fff; }
+html[data-theme="mercadolivre"] .card-badge--desconto { background: #00a650; color: #fff; }
+html[data-theme="mercadolivre"] .glitch::before,
+html[data-theme="mercadolivre"] .glitch::after { animation: none; }
+html[data-theme="mercadolivre"] .section-label { color: #3483fa; }
+html[data-theme="mercadolivre"] .filter-select,
+html[data-theme="mercadolivre"] .modal-input { border-color: #e5e5e5; }
+html[data-theme="mercadolivre"] .header .logo-text,
+html[data-theme="mercadolivre"] .header .logo-bracket,
+html[data-theme="mercadolivre"] .status-bar { color: #333; }
+
+/* Tema Magalu (Modular Magalu) */
+html[data-theme="magalu"] {
+  --bg-dark: #f7f7f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f7ff;
+  --neon-cyan: #0086ff;
+  --neon-magenta: #0086ff;
+  --neon-yellow: #ffb800;
+  --neon-green: #00c853;
+  --text-primary: #1a1a1a;
+  --text-muted: #666;
+  --border-glow: rgba(0, 134, 255, 0.25);
+  --shadow-cyan: 0 4px 20px rgba(0, 134, 255, 0.12);
+  --shadow-magenta: 0 4px 20px rgba(0, 134, 255, 0.1);
+  --font-display: 'Montserrat', -apple-system, sans-serif;
+  --font-body: 'Montserrat', -apple-system, sans-serif;
+  --radius: 22px;
+}
+
+html[data-theme="magalu"] body { background: #f7f7f7; }
+html[data-theme="magalu"] .header { background: linear-gradient(135deg, #0086ff 0%, #0066cc 100%); border: none; color: #fff; }
+html[data-theme="magalu"] .header .logo-text,
+html[data-theme="magalu"] .header .logo-bracket { color: #fff; }
+html[data-theme="magalu"] .header .logo-divider { color: rgba(255,255,255,0.8); }
+html[data-theme="magalu"] .status-bar { color: #ffb800; }
+html[data-theme="magalu"] .scanlines,
+html[data-theme="magalu"] .noise,
+html[data-theme="magalu"] .grid-overlay { opacity: 0; }
+html[data-theme="magalu"] .ad-card,
+html[data-theme="magalu"] .produto-item,
+html[data-theme="magalu"] .modal,
+html[data-theme="magalu"] .adm-form,
+html[data-theme="magalu"] .filter-btn { border-radius: 22px; }
+html[data-theme="magalu"] .ad-card::before { border-radius: 22px 22px 0 0; background: linear-gradient(90deg, #0086ff, #00a3ff); height: 4px; }
+html[data-theme="magalu"] .ad-card,
+html[data-theme="magalu"] .produto-item { border: 1px solid rgba(0, 134, 255, 0.12); box-shadow: 0 4px 20px rgba(0, 134, 255, 0.08); }
+html[data-theme="magalu"] .ad-card:hover,
+html[data-theme="magalu"] .produto-item:hover { box-shadow: 0 8px 28px rgba(0, 134, 255, 0.18); }
+html[data-theme="magalu"] .card-badge { border-radius: 12px; font-weight: 700; }
+html[data-theme="magalu"] .card-badge--oferta { background: linear-gradient(135deg, #0086ff, #00a3ff); color: #fff; }
+html[data-theme="magalu"] .card-badge--desconto { background: linear-gradient(135deg, #ffb800, #ff9500); color: #fff; }
+html[data-theme="magalu"] .ad-cta,
+html[data-theme="magalu"] .modal-btn--primary { font-weight: 700 !important; background: linear-gradient(135deg, #0086ff, #0066cc) !important; border: none !important; color: #fff !important; border-radius: 14px !important; }
+html[data-theme="magalu"] .ad-cta:hover,
+html[data-theme="magalu"] .modal-btn--primary:hover { box-shadow: 0 4px 16px rgba(0, 134, 255, 0.4); }
+html[data-theme="magalu"] .glitch::before,
+html[data-theme="magalu"] .glitch::after { animation: none; }
+html[data-theme="magalu"] .section-label { color: #0086ff; }
+html[data-theme="magalu"] .ads-container.view-listado { gap: 1rem; }
+html[data-theme="magalu"] .produto-item-thumb { border-radius: 16px; }
+html[data-theme="magalu"] .filter-select { border-radius: 14px; }
+html[data-theme="magalu"] .modal-close { border-radius: 10px; }

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Vitrine Net — vitrine de produtos para smartphone. Cadastre ofertas e exiba com link de afiliado.">
+  <title>Vitrine Net</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <script>
+    (function() {
+      var t = localStorage.getItem('afiliado_espehlo_theme_v1') || 'cyberpunk';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+  <div class="grid-overlay"></div>
+
+  <header class="header">
+    <div class="logo">
+      <span class="logo-bracket">[</span>
+      <span class="logo-text">AFILIADO</span>
+      <span class="logo-divider">//</span>
+      <span class="logo-text">ESPELHO</span>
+      <span class="logo-bracket">]</span>
+    </div>
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      <span class="status-text">SISTEMA ONLINE</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="hero">
+      <h1 class="hero-title">
+        <span class="glitch" data-text="Vitrine Net">Vitrine Net</span>
+      </h1>
+    </section>
+
+    <nav class="filters">
+      <button class="filter-btn filter-btn--primary" type="button" id="btnBusca" aria-label="Abrir busca">
+        <span>BUSCA</span>
+      </button>
+      <button class="filter-btn" type="button">
+        <span>OFERTAS</span>
+      </button>
+      <div class="filter-select-wrapper">
+        <label for="categorySelect" class="filter-label">CATEGORIAS</label>
+        <select id="categorySelect" class="filter-select">
+          <option value="">Todas as categorias</option>
+          <option value="sem_categoria">Sem categoria</option>
+          <option value="achadinhos">Achadinhos</option>
+          <option value="eletronicos">Eletrônicos</option>
+          <option value="casa">Casa &amp; Decoração</option>
+          <option value="moda">Moda</option>
+          <option value="beleza">Beleza</option>
+        </select>
+      </div>
+    </nav>
+
+    <section class="ads-section">
+      <div class="view-mode-row">
+        <label for="viewModeSelect" class="filter-label">VISUALIZAÇÃO</label>
+        <select id="viewModeSelect" class="filter-select view-mode-select">
+          <option value="amplo">Amplo</option>
+          <option value="listado">Listado</option>
+        </select>
+      </div>
+      <div class="section-label">
+        <span class="label-line"></span>
+        <span>PROPAGANDAS ATIVAS</span>
+        <span class="label-line"></span>
+      </div>
+
+      <div class="ads-container" id="adsContainer">
+        <!-- Produtos cadastrados via ADM aparecerão aqui -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-line"></div>
+    <p class="footer-text">© AFILIADO ESPELHO — v1.0 — CONEXÃO SEGURA</p>
+  </footer>
+
+  <div class="modal-overlay" id="modalBusca" aria-hidden="true" role="dialog" aria-labelledby="modalBuscaTitle">
+    <div class="modal modal--busca">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalBuscaTitle">BUSCAR</h2>
+        <button class="modal-close" type="button" id="btnFecharBusca" aria-label="Fechar">×</button>
+      </div>
+      <form class="modal-body" id="formBusca">
+        <label for="inputBusca" class="modal-label">O que você procura?</label>
+        <input type="search" id="inputBusca" class="modal-input" placeholder="Digite o item..." autocomplete="off" />
+        <div class="modal-actions">
+          <button type="button" class="modal-btn modal-btn--secondary" id="btnCancelarBusca">CANCELAR</button>
+          <button type="submit" class="modal-btn modal-btn--primary">BUSCAR</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
