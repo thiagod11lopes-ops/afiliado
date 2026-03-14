@@ -1130,6 +1130,18 @@ body {
   text-decoration: underline;
 }
 
+.ads-retry {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background: var(--neon-cyan, #0ff);
+  color: #0a0a0f;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
 /* Listado: cards em dupla (2 colunas) */
 .ads-container.view-listado {
   display: grid;

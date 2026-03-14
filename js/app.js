@@ -200,6 +200,9 @@
       container.classList.toggle('view-amplo', !isListado);
     }
 
+    if (window.VitrineFirebase && typeof VitrineFirebase.init === 'function') {
+      VitrineFirebase.init();
+    }
     if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
       container.innerHTML = '<p class="ads-loading">Carregando produtos...</p>';
       VitrineFirebase.getProdutos().then(function (r) {
@@ -207,6 +210,22 @@
         var err = r && r.error ? r.error : null;
         var src = r && r.source ? r.source : 'localStorage';
         draw(list, err, src);
+        if (list.length === 0 && (err || src === 'localStorage')) {
+          var wrap = container.querySelector('.ads-empty');
+          if (wrap) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'ads-retry';
+            btn.textContent = 'Carregar novamente';
+            btn.onclick = function () { renderProdutos(); };
+            wrap.appendChild(document.createElement('br'));
+            wrap.appendChild(btn);
+          }
+        }
+      }).catch(function (err) {
+        container.innerHTML = '<p class="ads-empty">Erro ao carregar. <button type="button" class="ads-retry" id="btnRetryVitrine">Carregar novamente</button></p>';
+        var btnRetry = document.getElementById('btnRetryVitrine');
+        if (btnRetry) btnRetry.onclick = function () { renderProdutos(); };
       });
     } else {
       try {
@@ -362,18 +381,17 @@
 
   function init() {
     if (window.VitrineFirebase && typeof VitrineFirebase.init === 'function') {
-      var ok = VitrineFirebase.init();
-      if (typeof console !== 'undefined' && console.log) {
-        console.log('Vitrine Net: Firebase init =', ok ? 'OK' : 'fallback localStorage');
-      }
+      VitrineFirebase.init();
     }
-    renderProdutos();
     initViewMode();
     initFiltroCategoria();
     initSearchModal();
     initCardNav();
     initCardVideoPlay();
     document.documentElement.style.scrollBehavior = 'smooth';
+    setTimeout(function () {
+      renderProdutos();
+    }, 150);
   }
 
   if (document.readyState === 'loading') {
