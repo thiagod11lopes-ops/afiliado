@@ -309,6 +309,7 @@
     if (btnDadosProduto && formFieldsProduto) {
       btnDadosProduto.addEventListener('click', function () {
         formFieldsProduto.classList.toggle('is-visible');
+        setTimeout(atualizarPreview, 0);
       });
     }
     $('#modalProdutos') && $('#modalProdutos').addEventListener('click', function (e) {
@@ -347,6 +348,26 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      var url = ($('#produtoUrl') && $('#produtoUrl').value || '').trim();
+      var titulo = ($('#produtoTitulo') && $('#produtoTitulo').value || '').trim();
+      var preco = ($('#produtoPreco') && $('#produtoPreco').value || '').trim();
+      var descricao = ($('#produtoDescricao') && $('#produtoDescricao').value || '').trim();
+      if (!url) {
+        alert('Preencha o link do produto.');
+        return;
+      }
+      if (!titulo) {
+        alert('Preencha o título.');
+        return;
+      }
+      if (!preco) {
+        alert('Preencha o preço.');
+        return;
+      }
+      if (!descricao) {
+        alert('Preencha a descrição.');
+        return;
+      }
       var imagens = getImagensFromField();
       if (!imagens.length) {
         alert('Adicione ao menos uma URL de imagem (digite e clique em Adicionar).');
