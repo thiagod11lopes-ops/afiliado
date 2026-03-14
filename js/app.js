@@ -10,14 +10,43 @@
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
   function escapeHtml(text) {
+    if (text == null) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
   }
 
   function getImagens(prod) {
-    if (!prod.imagem) return [];
+    if (!prod || !prod.imagem) return [];
     return Array.isArray(prod.imagem) ? prod.imagem : [prod.imagem];
+  }
+
+  function normalizarProduto(p) {
+    if (!p || typeof p !== 'object') return null;
+    return {
+      id: p.id,
+      url: String(p.url || '').trim() || '#',
+      titulo: String(p.titulo || '').trim() || 'Produto',
+      descricao: String(p.descricao || '').trim() || '',
+      preco: String(p.preco || '').trim() || '',
+      imagem: getImagens(p),
+      video: (p.video && String(p.video).trim()) || null,
+      categoria: (p.categoria && String(p.categoria).trim()) || 'sem_categoria',
+      oferta: p.oferta === true,
+      desconto: (p.desconto != null && p.desconto !== '') ? String(p.desconto) : null
+    };
+  }
+
+  function createProdutoCardSimples(prod) {
+    var p = normalizarProduto(prod);
+    if (!p) return null;
+    var a = document.createElement('a');
+    a.className = 'ad-card ad-card--amplo';
+    a.href = p.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.innerHTML = '<div class="ad-card-inner adm-preview-inner"><div class="adm-preview-content"><h3 class="ad-title">' + escapeHtml(p.titulo) + '</h3><p class="ad-desc">' + escapeHtml(p.descricao) + '</p><p class="adm-preco">' + escapeHtml(p.preco) + '</p><span class="ad-cta">VER OFERTA</span></div></div>';
+    return a;
   }
 
   /** Lista de mídia: apenas imagens. Cada item: { type: 'image', url } */
@@ -45,27 +74,29 @@
   }
 
   function createProdutoCardAmplo(prod) {
+    var p = normalizarProduto(prod);
+    if (!p) return null;
     const card = document.createElement('a');
     card.className = 'ad-card ad-card--amplo';
-    card.href = prod.url;
+    card.href = p.url;
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
 
-    const precoHtml = prod.preco ? `<p class="adm-preco">${escapeHtml(prod.preco)}</p>` : '';
-    const oferta = prod.oferta === true;
-    const desconto = prod.desconto ? String(prod.desconto) : '';
+    const precoHtml = p.preco ? '<p class="adm-preco">' + escapeHtml(p.preco) + '</p>' : '';
+    const oferta = p.oferta === true;
+    const desconto = p.desconto ? String(p.desconto) : '';
     let badgesHtml = '';
     if (oferta) badgesHtml += '<span class="card-badge card-badge--oferta">OFERTA</span>';
     if (desconto) badgesHtml += '<span class="card-badge card-badge--desconto">-' + escapeHtml(desconto) + '%</span>';
 
-    var mediaItems = getMediaItems(prod);
-    var hasVideo = prod.video && String(prod.video).trim();
+    var mediaItems = getMediaItems(p);
+    var hasVideo = p.video && String(p.video).trim();
     var imgBlock = '';
     if (mediaItems.length > 0) {
       var first = mediaItems[0];
       var navPrev = mediaItems.length > 1 ? '<button type="button" class="card-nav card-nav--prev" aria-label="Anterior">‹</button>' : '';
       var navNext = mediaItems.length > 1 ? '<button type="button" class="card-nav card-nav--next" aria-label="Próximo">›</button>' : '';
-      var imgDiv = '<div class="card-media-image"><img src="' + escapeHtml(first.url) + '" alt="' + escapeHtml(prod.titulo || 'Produto') + '" class="adm-preview-img" /></div>';
+      var imgDiv = '<div class="card-media-image"><img src="' + escapeHtml(first.url) + '" alt="' + escapeHtml(p.titulo) + '" class="adm-preview-img" /></div>';
       var videoDiv = '<div class="card-media-video" style="display:none"></div>';
       var firstHtml = imgDiv + videoDiv;
       var playOverlay = hasVideo ? '<button type="button" class="card-video-play-btn" aria-label="Assistir vídeo">▶</button><div class="card-video-layer" style="display:none"><button type="button" class="card-video-close" aria-label="Fechar vídeo">×</button><div class="card-video-inner"></div></div>' : '';
@@ -77,17 +108,16 @@
         '<div class="card-badges">' + badgesHtml + '</div></div>';
     }
 
-    card.innerHTML = `
-      <div class="ad-card-inner adm-preview-inner">
-        ${imgBlock}
-        <div class="adm-preview-content">
-          <h3 class="ad-title">${escapeHtml(prod.titulo || '')}</h3>
-          <p class="ad-desc">${escapeHtml(prod.descricao || '')}</p>
-          ${precoHtml}
-          <span class="ad-cta">VER OFERTA</span>
-        </div>
-      </div>
-    `;
+    card.innerHTML =
+      '<div class="ad-card-inner adm-preview-inner">' +
+        imgBlock +
+        '<div class="adm-preview-content">' +
+          '<h3 class="ad-title">' + escapeHtml(p.titulo) + '</h3>' +
+          '<p class="ad-desc">' + escapeHtml(p.descricao) + '</p>' +
+          precoHtml +
+          '<span class="ad-cta">VER OFERTA</span>' +
+        '</div>' +
+      '</div>';
 
     if (mediaItems.length > 0) {
       var wrap = card.querySelector('.card-media-wrap');
@@ -101,27 +131,29 @@
   }
 
   function createProdutoCardListado(prod) {
+    var p = normalizarProduto(prod);
+    if (!p) return null;
     const card = document.createElement('a');
     card.className = 'ad-card ad-card--listado produto-item';
-    card.href = prod.url;
+    card.href = p.url;
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
 
-    const oferta = prod.oferta === true;
-    const desconto = prod.desconto ? String(prod.desconto) : '';
+    const oferta = p.oferta === true;
+    const desconto = p.desconto ? String(p.desconto) : '';
     let badgesHtml = '';
     if (oferta) badgesHtml += '<span class="card-badge card-badge--oferta">OFERTA</span>';
     if (desconto) badgesHtml += '<span class="card-badge card-badge--desconto">-' + escapeHtml(desconto) + '%</span>';
 
-    var mediaListado = getMediaItems(prod);
+    var mediaListado = getMediaItems(p);
     var firstMediaListado = mediaListado.length > 0 ? mediaListado[0] : null;
-    var hasVideoListado = prod.video && String(prod.video).trim();
+    var hasVideoListado = p.video && String(p.video).trim();
     var thumbNavPrev = mediaListado.length > 1 ? '<button type="button" class="card-nav card-nav--prev" aria-label="Anterior">‹</button>' : '';
     var thumbNavNext = mediaListado.length > 1 ? '<button type="button" class="card-nav card-nav--next" aria-label="Próximo">›</button>' : '';
     var thumbPlayOverlay = hasVideoListado ? '<button type="button" class="card-video-play-btn" aria-label="Assistir vídeo">▶</button><div class="card-video-layer" style="display:none"><button type="button" class="card-video-close" aria-label="Fechar">×</button><div class="card-video-inner"></div></div>' : '';
     var thumbInner = '';
     if (firstMediaListado) {
-      thumbInner = '<div class="card-media-image"><img src="' + escapeHtml(firstMediaListado.url) + '" alt="' + escapeHtml(prod.titulo || 'Produto') + '" /></div>' +
+      thumbInner = '<div class="card-media-image"><img src="' + escapeHtml(firstMediaListado.url) + '" alt="' + escapeHtml(p.titulo) + '" /></div>' +
         '<div class="card-media-video" style="display:none"></div>';
     }
     const thumbBlock = mediaListado.length > 0
@@ -136,14 +168,14 @@
         (badgesHtml ? '<div class="card-badges">' + badgesHtml + '</div>' : '') +
         '</div>';
 
-    const precoHtml = prod.preco ? '<div class="produto-item-preco">' + escapeHtml(prod.preco) + '</div>' : '';
-    const descHtml = prod.descricao ? '<div class="produto-item-desc">' + escapeHtml(prod.descricao) + '</div>' : '';
+    const precoHtml = p.preco ? '<div class="produto-item-preco">' + escapeHtml(p.preco) + '</div>' : '';
+    const descHtml = p.descricao ? '<div class="produto-item-desc">' + escapeHtml(p.descricao) + '</div>' : '';
 
     card.innerHTML =
       '<div class="produto-item-row">' +
       '<div class="produto-item-left">' +
       thumbBlock +
-      '<div class="produto-item-titulo">' + escapeHtml(prod.titulo || '') + '</div>' +
+      '<div class="produto-item-titulo">' + escapeHtml(p.titulo) + '</div>' +
       descHtml +
       precoHtml +
       '</div>' +
@@ -193,12 +225,14 @@
         container.innerHTML = '<p class="ads-empty">' + msg + '</p>';
       } else {
         list.forEach(function (p) {
+          var card = null;
           try {
-            var card = isListado ? createProdutoCardListado(p) : createProdutoCardAmplo(p);
-            if (card) container.appendChild(card);
+            card = isListado ? createProdutoCardListado(p) : createProdutoCardAmplo(p);
           } catch (err) {
             if (typeof console !== 'undefined') console.error('Vitrine Net: erro ao criar card', p, err);
           }
+          if (!card) card = createProdutoCardSimples(p);
+          if (card) container.appendChild(card);
         });
       }
       container.classList.toggle('view-listado', isListado);
