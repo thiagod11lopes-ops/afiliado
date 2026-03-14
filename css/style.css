@@ -1117,6 +1117,19 @@ body {
   gap: 1rem;
 }
 
+.ads-loading,
+.ads-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-muted, #888);
+  font-size: 1rem;
+}
+
+.ads-empty a {
+  color: var(--neon-cyan, #0ff);
+  text-decoration: underline;
+}
+
 /* Listado: cards em dupla (2 colunas) */
 .ads-container.view-listado {
   display: grid;

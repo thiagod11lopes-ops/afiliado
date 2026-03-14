@@ -1,0 +1,47 @@
+============================================
+  COMO FAZER COMMIT — Projeto Afiliado smart
+============================================
+
+OPÇÃO 1 — Clicar no arquivo .bat (mais fácil)
+------------------------------------
+1. Dê dois cliques em:  fazer-commit.bat
+
+2. A janela do prompt abrirá. Digite a mensagem do commit ou Enter para "Atualização Vitrine Net".
+
+3. Ao final, a janela mostrará "Pause" — aperte qualquer tecla para fechar.
+
+
+OPÇÃO 1b — Script PowerShell
+------------------------------------
+1. Abra o PowerShell na pasta do projeto e execute:  .\fazer-commit.ps1
+2. Quando pedir, digite a mensagem do commit ou Enter para usar "Atualização Vitrine Net".
+
+
+OPÇÃO 2 — Comandos manuais
+------------------------------------
+Na pasta do projeto (PowerShell ou CMD):
+
+   git add .
+   git commit -m "sua mensagem aqui"
+
+Exemplos de mensagem:
+   git commit -m "Integração Firebase e deploy"
+   git commit -m "Ajuste da vitrine e ADM"
+
+
+PRIMEIRA VEZ (se ainda não tiver repositório)
+------------------------------------
+   cd "c:\Users\anamr\OneDrive\Área de Trabalho\Projetos\Afiliado smart"
+   git init
+   git branch -M main
+   git add .
+   git commit -m "Primeiro commit - Vitrine Net"
+
+
+ENVIAR PARA O GITHUB (depois do commit)
+------------------------------------
+   git remote add origin https://github.com/SEU_USUARIO/afiliado.git
+   git push -u origin main
+
+(Substitua SEU_USUARIO pelo seu usuário do GitHub.
+ Se o remote já existir, use apenas: git push)

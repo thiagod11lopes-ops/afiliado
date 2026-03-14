@@ -1,24 +1,17 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'afiliado_espehlo_produtos_v1';
   const THEME_STORAGE_KEY = 'afiliado_espehlo_theme_v1';
 
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
 
-  function getProdutos() {
+  function getProdutosSync() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
+      var raw = localStorage.getItem('afiliado_espehlo_produtos_v1');
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
       return [];
     }
-  }
-
-  function salvarProdutos(lista) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
   }
 
   function renderPreviewBadges(container, oferta, desconto) {
@@ -143,61 +136,42 @@
     const filtroCat = filtroCatSelect ? (filtroCatSelect.value || '').trim() : '';
     if (!modal || !lista) return;
 
-    let produtos = getProdutos();
-    if (filtroCat) {
-      produtos = produtos.filter(function (p) {
+    function render(produtos) {
+      var list = filtroCat ? produtos.filter(function (p) {
         var cat = (p.categoria && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
         return cat === filtroCat;
-      });
+      }) : produtos;
+      lista.innerHTML = '';
+      if (list.length === 0) {
+        vazio.classList.add('visible');
+        lista.classList.add('hidden');
+      } else {
+        vazio.classList.remove('visible');
+        lista.classList.remove('hidden');
+        var categoriaLabel = { sem_categoria: 'Sem categoria', achadinhos: 'Achadinhos', eletronicos: 'Eletrônicos', casa: 'Casa & Decoração', moda: 'Moda', beleza: 'Beleza' };
+        list.forEach(function (p) {
+          var li = document.createElement('li');
+          li.className = 'produto-item';
+          li.dataset.id = String(p.id);
+          var firstImg = Array.isArray(p.imagem) ? (p.imagem[0] || '') : (p.imagem || '');
+          var thumbHtml = firstImg ? '<div class="produto-item-thumb"><img src="' + escapeHtml(firstImg) + '" alt="" /></div>' : '<div class="produto-item-thumb"></div>';
+          var cat = (p.categoria && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
+          var catTexto = categoriaLabel[cat] || cat;
+          li.innerHTML = thumbHtml + '<div class="produto-item-info"><div class="produto-item-titulo">' + escapeHtml(p.titulo || '') + '</div><div class="produto-item-categoria">Categoria: ' + escapeHtml(catTexto) + '</div><div class="produto-item-preco">' + escapeHtml(p.preco || '') + '</div><div class="produto-item-actions"><button type="button" class="modal-btn modal-btn--primary btn-editar-produto">EDITAR</button></div></div>';
+          lista.appendChild(li);
+        });
+      }
+      atualizarContadorProdutos();
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
     }
-    lista.innerHTML = '';
 
-    if (produtos.length === 0) {
-      vazio.classList.add('visible');
-      lista.classList.add('hidden');
+    if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
+      VitrineFirebase.getProdutos().then(render);
     } else {
-      vazio.classList.remove('visible');
-      lista.classList.remove('hidden');
-      var categoriaLabel = {
-        sem_categoria: 'Sem categoria',
-        achadinhos: 'Achadinhos',
-        eletronicos: 'Eletrônicos',
-        casa: 'Casa & Decoração',
-        moda: 'Moda',
-        beleza: 'Beleza'
-      };
-
-      produtos.forEach(function (p) {
-        const li = document.createElement('li');
-        li.className = 'produto-item';
-        li.dataset.id = String(p.id);
-
-        var firstImg = Array.isArray(p.imagem) ? (p.imagem[0] || '') : (p.imagem || '');
-        const thumbHtml = firstImg
-          ? '<div class="produto-item-thumb"><img src="' + escapeHtml(firstImg) + '" alt="" /></div>'
-          : '<div class="produto-item-thumb"></div>';
-
-        var cat = (p.categoria && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
-        var catTexto = categoriaLabel[cat] || cat;
-
-        li.innerHTML =
-          thumbHtml +
-          '<div class="produto-item-info">' +
-          '<div class="produto-item-titulo">' + escapeHtml(p.titulo || '') + '</div>' +
-          '<div class="produto-item-categoria">Categoria: ' + escapeHtml(catTexto) + '</div>' +
-          '<div class="produto-item-preco">' + escapeHtml(p.preco || '') + '</div>' +
-          '<div class="produto-item-actions">' +
-          '<button type="button" class="modal-btn modal-btn--primary btn-editar-produto">EDITAR</button>' +
-          '</div></div>';
-
-        lista.appendChild(li);
-      });
+      render(getProdutosSync());
     }
-
-    atualizarContadorProdutos();
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
   }
 
   function fecharModalProdutos() {
@@ -209,11 +183,17 @@
   }
 
   function atualizarContadorProdutos() {
-    var total = getProdutos().length;
-    var el = document.getElementById('contadorProdutos');
-    if (el) el.textContent = total === 1 ? '1 produto cadastrado' : total + ' produtos cadastrados';
-    var modalEl = document.getElementById('modalContadorProdutos');
-    if (modalEl) modalEl.textContent = '(' + total + ')';
+    function setCount(total) {
+      var el = document.getElementById('contadorProdutos');
+      if (el) el.textContent = total === 1 ? '1 produto cadastrado' : total + ' produtos cadastrados';
+      var modalEl = document.getElementById('modalContadorProdutos');
+      if (modalEl) modalEl.textContent = '(' + total + ')';
+    }
+    if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
+      VitrineFirebase.getProdutos().then(function (p) { setCount(p.length); });
+    } else {
+      setCount(getProdutosSync().length);
+    }
   }
 
   function preencherFormParaEdicao(p) {
@@ -252,16 +232,22 @@
       if (!li) return;
       var id = li.getAttribute('data-id');
       if (!id) return;
-      var produtos = getProdutos();
-      var p = produtos.find(function (x) { return String(x.id) === id; });
-      if (!p) return;
-      fecharModalProdutos();
-      preencherFormParaEdicao(p);
-      var form = document.getElementById('formProduto');
-      if (form) {
-        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        var firstInput = form.querySelector('input, textarea, select');
-        if (firstInput) setTimeout(function () { firstInput.focus(); }, 100);
+      function openEdit(produtos) {
+        var p = produtos.find(function (x) { return String(x.id) === id; });
+        if (!p) return;
+        fecharModalProdutos();
+        preencherFormParaEdicao(p);
+        var form = document.getElementById('formProduto');
+        if (form) {
+          form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var firstInput = form.querySelector('input, textarea, select');
+          if (firstInput) setTimeout(function () { firstInput.focus(); }, 100);
+        }
+      }
+      if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
+        VitrineFirebase.getProdutos().then(openEdit);
+      } else {
+        openEdit(getProdutosSync());
       }
     });
 
@@ -286,6 +272,9 @@
   }
 
   function init() {
+    if (window.VitrineFirebase && typeof VitrineFirebase.init === 'function') {
+      VitrineFirebase.init();
+    }
     initTema();
     atualizarContadorProdutos();
     initModalProdutosDelegation();
@@ -385,27 +374,34 @@
         desconto: ($('#produtoDesconto') && $('#produtoDesconto').value) || null
       };
 
-      const lista = getProdutos();
-
-      if (editingId) {
-        const idx = lista.findIndex(function (x) { return String(x.id) === editingId; });
-        if (idx !== -1) {
-          lista[idx] = produto;
-          salvarProdutos(lista);
-          alert('Produto atualizado com sucesso.');
+      function doSave(lista) {
+        if (editingId) {
+          var idx = lista.findIndex(function (x) { return String(x.id) === editingId; });
+          if (idx !== -1) {
+            lista[idx] = produto;
+            form.dataset.editingId = '';
+            $('#btnSubmitProduto').textContent = 'CADASTRAR';
+          }
+        } else {
+          lista.unshift(produto);
         }
-        form.dataset.editingId = '';
-        $('#btnSubmitProduto').textContent = 'CADASTRAR';
-      } else {
-        lista.unshift(produto);
-        salvarProdutos(lista);
-        alert('Produto cadastrado com sucesso! Abra o index.html para ver em PROPAGANDAS ATIVAS.');
+        var savePromise = (window.VitrineFirebase && typeof VitrineFirebase.saveProdutos === 'function')
+          ? VitrineFirebase.saveProdutos(lista)
+          : Promise.resolve((function () { try { localStorage.setItem('afiliado_espehlo_produtos_v1', JSON.stringify(lista)); } catch (e) {} })());
+        savePromise.then(function () {
+          alert(editingId ? 'Produto atualizado com sucesso.' : 'Produto cadastrado com sucesso! Abra o index.html para ver na vitrine.');
+          form.reset();
+          limparListaImagens();
+          atualizarPreview();
+          atualizarContadorProdutos();
+        });
       }
 
-      form.reset();
-      limparListaImagens();
-      atualizarPreview();
-      atualizarContadorProdutos();
+      if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
+        VitrineFirebase.getProdutos().then(doSave);
+      } else {
+        doSave(getProdutosSync());
+      }
     });
 
     atualizarPreview();

@@ -24,6 +24,40 @@ Recomendado usar em smartphone ou emulador mobile para melhor experiência.
 
 Não é necessário servidor nem build: só HTML, CSS e JS estáticos.
 
+## 🔥 Publicar no Firebase (Hosting)
+
+1. **Instale o Firebase CLI** (uma vez no PC):
+   ```bash
+   npm install -g firebase-tools
+   ```
+   *(Requer [Node.js](https://nodejs.org) instalado.)*
+
+2. **Entre na pasta do projeto** e faça login:
+   ```bash
+   cd "caminho/para/Afiliado smart"
+   firebase login
+   ```
+
+3. **Crie um projeto no Firebase** (se ainda não tiver):
+   - Acesse [console.firebase.google.com](https://console.firebase.google.com)
+   - Clique em **Adicionar projeto** → dê um nome (ex.: `vitrine-net`) → conclua
+
+4. **Vincule o projeto** (na pasta do projeto):
+   ```bash
+   firebase use --add
+   ```
+   - Escolha **"Use an existing project"** e selecione o projeto, ou crie um novo no [Console](https://console.firebase.google.com).
+   - Dê um alias se quiser (ex.: `default`) ou Enter.
+
+5. **Publique o site**:
+   ```bash
+   firebase deploy
+   ```
+
+6. O site ficará em: **https://SEU-PROJETO.web.app** (e em **https://SEU-PROJETO.firebaseapp.com**).
+
+O arquivo `firebase.json` já está no repositório com a configuração de Hosting.
+
 ## 📂 Estrutura
 
 ```
@@ -35,6 +69,7 @@ Não é necessário servidor nem build: só HTML, CSS e JS estáticos.
 ├── js/
 │   ├── app.js          # Vitrine: listagem, filtros, navegação de imagens
 │   └── adm.js          # ADM: cadastro, lista de produtos, tema
+├── firebase.json        # Config do Firebase Hosting
 ├── README.md
 ├── .gitignore
 └── LICENSE

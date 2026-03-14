@@ -6,21 +6,8 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'afiliado_espehlo_produtos_v1';
-
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
-
-  function getProdutos() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
 
   function escapeHtml(text) {
     const div = document.createElement('div');
@@ -186,25 +173,34 @@
     const selectCat = $('#categorySelect');
     if (!container) return;
 
-    const categoriaFiltro = selectCat ? (selectCat.value || '').trim() : '';
-    let produtos = getProdutos();
-
-    if (categoriaFiltro) {
-      produtos = produtos.filter(function (p) {
-        return getCategoriaProduto(p) === categoriaFiltro;
-      });
-    }
-
-    container.innerHTML = '';
+    var categoriaFiltro = selectCat ? (selectCat.value || '').trim() : '';
     var viewMode = ($('#viewModeSelect') && $('#viewModeSelect').value) || 'amplo';
     var isListado = viewMode === 'listado';
-    produtos.forEach(function (p) {
-      container.appendChild(isListado ? createProdutoCardListado(p) : createProdutoCardAmplo(p));
-    });
-    var adsContainer = $('#adsContainer');
-    if (adsContainer) {
-      adsContainer.classList.toggle('view-listado', isListado);
-      adsContainer.classList.toggle('view-amplo', !isListado);
+
+    function draw(produtos) {
+      var list = categoriaFiltro ? produtos.filter(function (p) { return getCategoriaProduto(p) === categoriaFiltro; }) : produtos;
+      container.innerHTML = '';
+      if (list.length === 0) {
+        container.innerHTML = '<p class="ads-empty">Nenhum produto cadastrado. Cadastre em <a href="ADM.html">ADM</a>.</p>';
+      } else {
+        list.forEach(function (p) {
+          container.appendChild(isListado ? createProdutoCardListado(p) : createProdutoCardAmplo(p));
+        });
+      }
+      container.classList.toggle('view-listado', isListado);
+      container.classList.toggle('view-amplo', !isListado);
+    }
+
+    if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
+      container.innerHTML = '<p class="ads-loading">Carregando produtos...</p>';
+      VitrineFirebase.getProdutos().then(draw);
+    } else {
+      try {
+        var raw = localStorage.getItem('afiliado_espehlo_produtos_v1');
+        draw(raw ? JSON.parse(raw) : []);
+      } catch (e) {
+        draw([]);
+      }
     }
   }
 
@@ -351,6 +347,9 @@
   }
 
   function init() {
+    if (window.VitrineFirebase && typeof VitrineFirebase.init === 'function') {
+      VitrineFirebase.init();
+    }
     renderProdutos();
     initViewMode();
     initFiltroCategoria();
