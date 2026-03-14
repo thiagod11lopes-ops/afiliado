@@ -193,7 +193,12 @@
         container.innerHTML = '<p class="ads-empty">' + msg + '</p>';
       } else {
         list.forEach(function (p) {
-          container.appendChild(isListado ? createProdutoCardListado(p) : createProdutoCardAmplo(p));
+          try {
+            var card = isListado ? createProdutoCardListado(p) : createProdutoCardAmplo(p);
+            if (card) container.appendChild(card);
+          } catch (err) {
+            if (typeof console !== 'undefined') console.error('Vitrine Net: erro ao criar card', p, err);
+          }
         });
       }
       container.classList.toggle('view-listado', isListado);
