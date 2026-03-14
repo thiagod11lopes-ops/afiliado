@@ -177,11 +177,20 @@
     var viewMode = ($('#viewModeSelect') && $('#viewModeSelect').value) || 'amplo';
     var isListado = viewMode === 'listado';
 
-    function draw(produtos) {
-      var list = categoriaFiltro ? produtos.filter(function (p) { return getCategoriaProduto(p) === categoriaFiltro; }) : produtos;
+    function draw(produtos, error, source) {
+      var list = Array.isArray(produtos) ? produtos : [];
+      list = categoriaFiltro ? list.filter(function (p) { return getCategoriaProduto(p) === categoriaFiltro; }) : list;
       container.innerHTML = '';
       if (list.length === 0) {
-        container.innerHTML = '<p class="ads-empty">Nenhum produto cadastrado. Cadastre em <a href="ADM.html">ADM</a>.</p>';
+        var msg = 'Nenhum produto cadastrado.';
+        if (error) {
+          msg = 'Erro ao carregar: ' + error + '. ';
+        } else if (source === 'localStorage') {
+          msg = 'Cadastre produtos pelo <a href="ADM.html">ADM</a> do site (mesmo endereço desta página) para eles aparecerem aqui.';
+        } else {
+          msg = 'Nenhum produto cadastrado. Cadastre em <a href="ADM.html">ADM</a>.';
+        }
+        container.innerHTML = '<p class="ads-empty">' + msg + '</p>';
       } else {
         list.forEach(function (p) {
           container.appendChild(isListado ? createProdutoCardListado(p) : createProdutoCardAmplo(p));
@@ -193,13 +202,18 @@
 
     if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
       container.innerHTML = '<p class="ads-loading">Carregando produtos...</p>';
-      VitrineFirebase.getProdutos().then(draw);
+      VitrineFirebase.getProdutos().then(function (r) {
+        var list = r && r.list ? r.list : (Array.isArray(r) ? r : []);
+        var err = r && r.error ? r.error : null;
+        var src = r && r.source ? r.source : 'localStorage';
+        draw(list, err, src);
+      });
     } else {
       try {
         var raw = localStorage.getItem('afiliado_espehlo_produtos_v1');
-        draw(raw ? JSON.parse(raw) : []);
+        draw(raw ? JSON.parse(raw) : [], null, 'localStorage');
       } catch (e) {
-        draw([]);
+        draw([], null, 'localStorage');
       }
     }
   }

@@ -32,36 +32,41 @@
 
   function getProdutosFromFirestore() {
     return new Promise(function (resolve) {
+      var result = { list: [], source: 'localStorage', error: null };
       if (!configValid || !db) {
         if (typeof console !== 'undefined' && console.log) {
           console.log('Vitrine Net: Firebase nao inicializado, usando localStorage.');
         }
         try {
           var raw = localStorage.getItem(STORAGE_KEY);
-          resolve(raw ? JSON.parse(raw) : []);
+          result.list = raw ? JSON.parse(raw) : [];
         } catch (e) {
-          resolve([]);
+          result.list = [];
         }
+        resolve(result);
         return;
       }
+      result.source = 'firestore';
       db.collection('vitrine').doc('produtos').get()
         .then(function (doc) {
           var data = doc.exists && doc.data() ? doc.data() : {};
           var items = data.items;
-          var list = Array.isArray(items) ? items : [];
+          result.list = Array.isArray(items) ? items : [];
           if (typeof console !== 'undefined' && console.log) {
-            console.log('Vitrine Net: carregados', list.length, 'produtos do Firestore.');
+            console.log('Vitrine Net: carregados', result.list.length, 'produtos do Firestore.');
           }
-          resolve(list);
+          resolve(result);
         })
         .catch(function (err) {
-          console.warn('Vitrine Net: erro ao ler Firestore, usando localStorage.', err);
+          console.warn('Vitrine Net: erro ao ler Firestore.', err);
+          result.error = (err && err.message) ? err.message : String(err);
           try {
             var raw = localStorage.getItem(STORAGE_KEY);
-            resolve(raw ? JSON.parse(raw) : []);
+            result.list = raw ? JSON.parse(raw) : [];
           } catch (e) {
-            resolve([]);
+            result.list = [];
           }
+          resolve(result);
         });
     });
   }

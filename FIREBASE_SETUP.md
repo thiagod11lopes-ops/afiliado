@@ -1,6 +1,16 @@
 # Configurar o Firebase como backend (Vitrine Net)
 
-O sistema já está preparado para usar **Firestore** como backend. Siga estes passos no projeto **afiliado** do Firebase.
+O sistema já está preparado para usar **Firestore** como backend. Siga estes passos no seu projeto Firebase.
+
+---
+
+## Se você recriou o projeto (novo projeto do zero)
+
+1. **`js/firebase-config.js`** — Cole a nova configuração (firebaseConfig) do novo projeto; o arquivo já está com placeholders.
+2. **Firestore** — Crie o banco de dados no novo projeto (etapa 3 abaixo) e publique as regras (etapa 4).
+3. **Deploy** — No terminal: `firebase use --add` (escolha o novo projeto) e depois `firebase deploy --only hosting`. O `.firebaserc` será atualizado ao usar `firebase use --add`.
+
+---
 
 ## 1. Registrar o app Web
 
