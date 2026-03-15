@@ -188,7 +188,7 @@
             var thumbHtml = firstImg ? '<div class="produto-item-thumb"><img src="' + escapeHtml(firstImg) + '" alt="" /></div>' : '<div class="produto-item-thumb"></div>';
             var cat = (p.categoria && typeof p.categoria === 'string' && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
             var catTexto = categoriaLabel[cat] || cat;
-            li.innerHTML = thumbHtml + '<div class="produto-item-info"><div class="produto-item-titulo">' + escapeHtml(p.titulo || '') + '</div><div class="produto-item-categoria">Categoria: ' + escapeHtml(catTexto) + '</div><div class="produto-item-preco">' + escapeHtml(p.preco || '') + '</div><div class="produto-item-actions"><button type="button" class="modal-btn modal-btn--primary btn-editar-produto">EDITAR</button></div></div>';
+            li.innerHTML = thumbHtml + '<div class="produto-item-info"><div class="produto-item-titulo">' + escapeHtml(p.titulo || '') + '</div><div class="produto-item-categoria">Categoria: ' + escapeHtml(catTexto) + '</div><div class="produto-item-preco">' + escapeHtml(p.preco || '') + '</div><div class="produto-item-actions"><button type="button" class="modal-btn modal-btn--primary btn-editar-produto">EDITAR</button> <button type="button" class="modal-btn modal-btn--danger btn-excluir-produto">EXCLUIR</button></div></div>';
             lista.appendChild(li);
           }
         }
@@ -244,27 +244,49 @@
 
   function initModalProdutosDelegation() {
     document.addEventListener('click', function (e) {
-      var btn = e.target.closest('.btn-editar-produto');
-      if (!btn) return;
+      var btnEditar = e.target.closest('.btn-editar-produto');
+      var btnExcluir = e.target.closest('.btn-excluir-produto');
       var modal = document.getElementById('modalProdutos');
       if (!modal || !modal.classList.contains('is-open')) return;
       var lista = document.getElementById('listaProdutosModal');
-      if (!lista || !lista.contains(btn)) return;
-      e.preventDefault();
-      e.stopPropagation();
-      var li = btn.closest('.produto-item');
-      if (!li) return;
+      if (!lista) return;
+      var li = (btnEditar || btnExcluir) ? (btnEditar || btnExcluir).closest('.produto-item') : null;
+      if (!li || !lista.contains(li)) return;
       var id = li.getAttribute('data-id');
       if (!id) return;
-      var p = cachedProdutos.find(function (x) { return String(x.id) === id; });
-      if (!p) return;
-      fecharModalProdutos();
-      preencherFormParaEdicao(p);
-      var form = document.getElementById('formProduto');
-      if (form) {
-        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        var firstInput = form.querySelector('input, textarea, select');
-        if (firstInput) setTimeout(function () { firstInput.focus(); }, 100);
+
+      if (btnExcluir) {
+        e.preventDefault();
+        e.stopPropagation();
+        var msg = 'O produto será excluído.\n\nA página https://thiagod11lopes-ops.github.io/afiliado/index.html terá esse produto excluído.\n\nDeseja continuar?';
+        if (!confirm(msg)) return;
+        var novaLista = cachedProdutos.filter(function (x) { return String(x.id) !== id; });
+        setCachedProdutos(novaLista);
+        var savePromise = (window.VitrineFirebase && typeof VitrineFirebase.saveProdutos === 'function')
+          ? VitrineFirebase.saveProdutos(novaLista)
+          : Promise.resolve((function () { try { localStorage.setItem('afiliado_espehlo_produtos_v1', JSON.stringify(novaLista)); } catch (err) {} })());
+        savePromise.then(function () {
+          atualizarContadorProdutos();
+          abrirModalProdutos();
+        }).catch(function (err) {
+          alert('Não foi possível excluir. Erro: ' + (err && err.message ? err.message : String(err)));
+        });
+        return;
+      }
+
+      if (btnEditar) {
+        e.preventDefault();
+        e.stopPropagation();
+        var p = cachedProdutos.find(function (x) { return String(x.id) === id; });
+        if (!p) return;
+        fecharModalProdutos();
+        preencherFormParaEdicao(p);
+        var form = document.getElementById('formProduto');
+        if (form) {
+          form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var firstInput = form.querySelector('input, textarea, select');
+          if (firstInput) setTimeout(function () { firstInput.focus(); }, 100);
+        }
       }
     });
 
