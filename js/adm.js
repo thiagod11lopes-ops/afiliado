@@ -141,43 +141,59 @@
     const filtroCat = filtroCatSelect ? (filtroCatSelect.value || '').trim() : '';
     if (!modal || !lista) return;
 
-    function render(produtos) {
-      var arr = Array.isArray(produtos) ? produtos : [];
-      var list = filtroCat ? arr.filter(function (p) {
-        var cat = (p.categoria && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
-        return cat === filtroCat;
-      }) : arr;
-      lista.innerHTML = '';
-      if (list.length === 0) {
-        vazio.classList.add('visible');
-        lista.classList.add('hidden');
-      } else {
-        vazio.classList.remove('visible');
-        lista.classList.remove('hidden');
-        var categoriaLabel = { sem_categoria: 'Sem categoria', achadinhos: 'Achadinhos', eletronicos: 'Eletrônicos', casa: 'Casa & Decoração', moda: 'Moda', beleza: 'Beleza' };
-        list.forEach(function (p) {
-          var li = document.createElement('li');
-          li.className = 'produto-item';
-          li.dataset.id = String(p.id);
-          var firstImg = Array.isArray(p.imagem) ? (p.imagem[0] || '') : (p.imagem || '');
-          var thumbHtml = firstImg ? '<div class="produto-item-thumb"><img src="' + escapeHtml(firstImg) + '" alt="" /></div>' : '<div class="produto-item-thumb"></div>';
-          var cat = (p.categoria && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
-          var catTexto = categoriaLabel[cat] || cat;
-          li.innerHTML = thumbHtml + '<div class="produto-item-info"><div class="produto-item-titulo">' + escapeHtml(p.titulo || '') + '</div><div class="produto-item-categoria">Categoria: ' + escapeHtml(catTexto) + '</div><div class="produto-item-preco">' + escapeHtml(p.preco || '') + '</div><div class="produto-item-actions"><button type="button" class="modal-btn modal-btn--primary btn-editar-produto">EDITAR</button></div></div>';
-          lista.appendChild(li);
-        });
-      }
-      atualizarContadorProdutos();
+    function openModal() {
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
     }
 
+    function render(produtos) {
+      try {
+        var arr = Array.isArray(produtos) ? produtos : [];
+        var list = filtroCat ? arr.filter(function (p) {
+          var cat = (p && p.categoria && typeof p.categoria === 'string') ? p.categoria.trim() : (p && p.categoria) ? String(p.categoria) : '';
+          cat = (cat && cat.trim()) ? cat.trim() : 'sem_categoria';
+          return cat === filtroCat;
+        }) : arr;
+        lista.innerHTML = '';
+        if (list.length === 0) {
+          if (vazio) { vazio.classList.add('visible'); vazio.classList.remove('hidden'); }
+          if (lista) lista.classList.add('hidden');
+        } else {
+          if (vazio) { vazio.classList.remove('visible'); vazio.classList.add('hidden'); }
+          if (lista) lista.classList.remove('hidden');
+          var categoriaLabel = { sem_categoria: 'Sem categoria', achadinhos: 'Achadinhos', eletronicos: 'Eletrônicos', casa: 'Casa & Decoração', moda: 'Moda', beleza: 'Beleza' };
+          for (var i = 0; i < list.length; i++) {
+            var p = list[i];
+            if (!p || typeof p !== 'object') continue;
+            var li = document.createElement('li');
+            li.className = 'produto-item';
+            li.dataset.id = String(p.id != null ? p.id : '');
+            var firstImg = Array.isArray(p.imagem) ? (p.imagem[0] || '') : (typeof p.imagem === 'string' ? p.imagem : '');
+            var thumbHtml = firstImg ? '<div class="produto-item-thumb"><img src="' + escapeHtml(firstImg) + '" alt="" /></div>' : '<div class="produto-item-thumb"></div>';
+            var cat = (p.categoria && typeof p.categoria === 'string' && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
+            var catTexto = categoriaLabel[cat] || cat;
+            li.innerHTML = thumbHtml + '<div class="produto-item-info"><div class="produto-item-titulo">' + escapeHtml(p.titulo || '') + '</div><div class="produto-item-categoria">Categoria: ' + escapeHtml(catTexto) + '</div><div class="produto-item-preco">' + escapeHtml(p.preco || '') + '</div><div class="produto-item-actions"><button type="button" class="modal-btn modal-btn--primary btn-editar-produto">EDITAR</button></div></div>';
+            lista.appendChild(li);
+          }
+        }
+        atualizarContadorProdutos();
+      } catch (err) {
+        if (typeof console !== 'undefined') console.warn('adm render produtos:', err);
+        lista.innerHTML = '';
+        if (vazio) { vazio.classList.add('visible'); vazio.textContent = 'Erro ao carregar a lista.'; }
+      }
+    }
+
+    openModal();
     if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
       VitrineFirebase.getProdutos().then(function (r) {
         var raw = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
         var list = Array.isArray(raw) ? raw : [];
         render(list);
+      }).catch(function (err) {
+        if (typeof console !== 'undefined') console.warn('adm getProdutos:', err);
+        render([]);
       });
     } else {
       render(getProdutosSync());
