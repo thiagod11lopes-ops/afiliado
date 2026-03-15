@@ -14,6 +14,12 @@
     }
   }
 
+  function toArray(val) {
+    if (Array.isArray(val)) return val;
+    if (val && val.list && Array.isArray(val.list)) return val.list;
+    return [];
+  }
+
   function renderPreviewBadges(container, oferta, desconto) {
     if (!container) return;
     let html = '';
@@ -149,13 +155,13 @@
 
     function render(produtos) {
       try {
-        var arr = (produtos && Array.isArray(produtos.list)) ? produtos.list : (Array.isArray(produtos) ? produtos : []);
+        var arr = toArray(produtos);
         var filtered = filtroCat ? arr.filter(function (p) {
           var cat = (p && p.categoria && typeof p.categoria === 'string') ? p.categoria.trim() : (p && p.categoria) ? String(p.categoria) : '';
           cat = (cat && cat.trim()) ? cat.trim() : 'sem_categoria';
           return cat === filtroCat;
         }) : arr;
-        var list = Array.isArray(filtered) ? filtered : [];
+        var list = toArray(filtered);
         lista.innerHTML = '';
         if (list.length === 0) {
           if (vazio) { vazio.classList.add('visible'); vazio.classList.remove('hidden'); }
@@ -164,8 +170,10 @@
           if (vazio) { vazio.classList.remove('visible'); vazio.classList.add('hidden'); }
           if (lista) lista.classList.remove('hidden');
           var categoriaLabel = { sem_categoria: 'Sem categoria', achadinhos: 'Achadinhos', eletronicos: 'Eletrônicos', casa: 'Casa & Decoração', moda: 'Moda', beleza: 'Beleza' };
-          for (var i = 0; i < list.length; i++) {
+          var i = 0;
+          while (i < list.length) {
             var p = list[i];
+            i++;
             if (!p || typeof p !== 'object') continue;
             var li = document.createElement('li');
             li.className = 'produto-item';
@@ -189,9 +197,7 @@
     openModal();
     if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
       VitrineFirebase.getProdutos().then(function (r) {
-        var raw = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
-        var list = Array.isArray(raw) ? raw : [];
-        render(list);
+        render(toArray(r && r.list ? r.list : r));
       }).catch(function (err) {
         if (typeof console !== 'undefined') console.warn('adm getProdutos:', err);
         render([]);
