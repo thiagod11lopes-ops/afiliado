@@ -46,13 +46,9 @@
       <h1 class="hero-title">
         <span class="glitch" data-text="Vitrine Net">Vitrine Net</span>
       </h1>
-      <p class="adm-contador" id="contadorProdutos">0 produtos cadastrados</p>
     </section>
 
     <section class="adm-section">
-      <div class="adm-actions-top">
-        <button type="button" class="modal-btn modal-btn--primary" id="btnVerProdutos">VER PRODUTOS CADASTRADOS</button>
-      </div>
       <div class="adm-tema">
         <label for="temaFrontend" class="modal-label">Tema</label>
         <select id="temaFrontend" class="modal-input adm-select adm-select--full">
@@ -212,31 +208,6 @@
     <div class="footer-line"></div>
     <p class="footer-text">© AFILIADO ESPELHO — PAINEL ADM</p>
   </footer>
-
-  <div class="modal-overlay" id="modalProdutos" aria-hidden="true" role="dialog" aria-labelledby="modalProdutosTitle">
-    <div class="modal modal--produtos">
-      <div class="modal-header">
-        <h2 class="modal-title" id="modalProdutosTitle">PRODUTOS CADASTRADOS <span class="modal-contador" id="modalContadorProdutos">(0)</span></h2>
-        <button class="modal-close" type="button" id="btnFecharModalProdutos" aria-label="Fechar">×</button>
-      </div>
-      <div class="modal-body modal-body--lista">
-        <div class="adm-field">
-          <label for="modalCategoriaFiltro" class="modal-label">Filtrar por categoria</label>
-          <select id="modalCategoriaFiltro" class="modal-input adm-select adm-select--full">
-            <option value="">Todas as categorias</option>
-            <option value="sem_categoria">Sem categoria</option>
-            <option value="achadinhos">Achadinhos</option>
-            <option value="eletronicos">Eletrônicos</option>
-            <option value="casa">Casa & Decoração</option>
-            <option value="moda">Moda</option>
-            <option value="beleza">Beleza</option>
-          </select>
-        </div>
-        <p class="modal-empty" id="modalProdutosVazio">Nenhum produto cadastrado.</p>
-        <ul class="lista-produtos" id="listaProdutosModal"></ul>
-      </div>
-    </div>
-  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
