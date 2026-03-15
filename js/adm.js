@@ -142,10 +142,11 @@
     if (!modal || !lista) return;
 
     function render(produtos) {
-      var list = filtroCat ? produtos.filter(function (p) {
+      var arr = Array.isArray(produtos) ? produtos : [];
+      var list = filtroCat ? arr.filter(function (p) {
         var cat = (p.categoria && p.categoria.trim()) ? p.categoria.trim() : 'sem_categoria';
         return cat === filtroCat;
-      }) : produtos;
+      }) : arr;
       lista.innerHTML = '';
       if (list.length === 0) {
         vazio.classList.add('visible');
@@ -174,7 +175,8 @@
 
     if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
       VitrineFirebase.getProdutos().then(function (r) {
-        var list = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
+        var raw = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
+        var list = Array.isArray(raw) ? raw : [];
         render(list);
       });
     } else {

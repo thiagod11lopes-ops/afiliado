@@ -51,7 +51,13 @@
         .then(function (doc) {
           var data = doc.exists && doc.data() ? doc.data() : {};
           var items = data.items;
-          result.list = Array.isArray(items) ? items : [];
+          if (Array.isArray(items)) {
+            result.list = items;
+          } else if (items && typeof items === 'object' && !Array.isArray(items)) {
+            result.list = Object.keys(items).map(function (k) { return items[k]; });
+          } else {
+            result.list = [];
+          }
           if (typeof console !== 'undefined' && console.log) {
             console.log('Vitrine Net: carregados', result.list.length, 'produtos do Firestore.');
           }
