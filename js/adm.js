@@ -173,7 +173,10 @@
     }
 
     if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
-      VitrineFirebase.getProdutos().then(render);
+      VitrineFirebase.getProdutos().then(function (r) {
+        var list = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
+        render(list);
+      });
     } else {
       render(getProdutosSync());
     }
@@ -189,13 +192,17 @@
 
   function atualizarContadorProdutos() {
     function setCount(total) {
+      var n = total == null || isNaN(total) ? 0 : Number(total);
       var el = document.getElementById('contadorProdutos');
-      if (el) el.textContent = total === 1 ? '1 produto cadastrado' : total + ' produtos cadastrados';
+      if (el) el.textContent = n === 1 ? '1 produto cadastrado' : n + ' produtos cadastrados';
       var modalEl = document.getElementById('modalContadorProdutos');
-      if (modalEl) modalEl.textContent = '(' + total + ')';
+      if (modalEl) modalEl.textContent = '(' + n + ')';
     }
     if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
-      VitrineFirebase.getProdutos().then(function (p) { setCount(p.length); });
+      VitrineFirebase.getProdutos().then(function (r) {
+        var list = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
+        setCount(Array.isArray(list) ? list.length : 0);
+      });
     } else {
       setCount(getProdutosSync().length);
     }
@@ -250,7 +257,10 @@
         }
       }
       if (window.VitrineFirebase && typeof VitrineFirebase.getProdutos === 'function') {
-        VitrineFirebase.getProdutos().then(openEdit);
+        VitrineFirebase.getProdutos().then(function (r) {
+          var list = (r && r.list) ? r.list : (Array.isArray(r) ? r : []);
+          openEdit(list);
+        });
       } else {
         openEdit(getProdutosSync());
       }
