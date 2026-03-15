@@ -149,12 +149,13 @@
 
     function render(produtos) {
       try {
-        var arr = Array.isArray(produtos) ? produtos : [];
-        var list = filtroCat ? arr.filter(function (p) {
+        var arr = (produtos && Array.isArray(produtos.list)) ? produtos.list : (Array.isArray(produtos) ? produtos : []);
+        var filtered = filtroCat ? arr.filter(function (p) {
           var cat = (p && p.categoria && typeof p.categoria === 'string') ? p.categoria.trim() : (p && p.categoria) ? String(p.categoria) : '';
           cat = (cat && cat.trim()) ? cat.trim() : 'sem_categoria';
           return cat === filtroCat;
         }) : arr;
+        var list = Array.isArray(filtered) ? filtered : [];
         lista.innerHTML = '';
         if (list.length === 0) {
           if (vazio) { vazio.classList.add('visible'); vazio.classList.remove('hidden'); }
